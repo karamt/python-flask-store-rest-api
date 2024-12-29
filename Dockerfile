@@ -1,7 +1,8 @@
-FROM python:3.14.0a3-slim-bullseye
-EXPOSE 5000
+FROM python:3.9.5-slim
 WORKDIR /app
+EXPOSE 80
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY . .
-CMD [ "flask","run","--host","0.0.0.0"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:create_app()"]
+CMD ["/bin/bash", "docker-entrypoint.sh"]

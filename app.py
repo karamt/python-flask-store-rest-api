@@ -10,12 +10,22 @@ from db import db
 from blocklist import BLOCKLIST
 import models # its same as import models.__init__
 
+from dotenv import load_dotenv,find_dotenv
+
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBluePrint
 def create_app(db_url=None):
     app = Flask(__name__)
+    
+    # load the env variables from .evn file
+    # override arg will override/fresh load the properties loaded from .evn file
+    # While using docker hub, this loading is optional as we can direclty setup the .evn as env_file in docker compose file
+    #load_dotenv(verbose=True, override=True)
+
+    load_dotenv(override=True) 
+    print(os.environ["DATABASE_URL"])
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Stores REST API"
@@ -24,13 +34,12 @@ def create_app(db_url=None):
     app.config["OPENAPI_URL_PREFIX"] = "/"
     app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
     app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL", "sqlite:///data.db")
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
     db.init_app(app)
     migrate = Migrate(app,db)
     api = Api(app)
-    
 
     app.config["JWT_SECRET_KEY"] = "somerandomkey"
     jwt = JWTManager(app)
@@ -104,7 +113,7 @@ def create_app(db_url=None):
     # Since we will be using Flask-Migrate to create our database, 
     # we no longer need to tell Flask-SQLAlchemy to do it when we create the app.
     # Delete these two lines:
-    
+
     # with app.app_context():
     #     db.create_all()
 
