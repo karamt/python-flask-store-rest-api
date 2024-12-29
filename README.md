@@ -18,22 +18,22 @@ flask run -h 0.0.0.0 -p 8000
 # Bulding docker compose web service forcefully (if say some modules are added to requirements.txt after last docker compose build)
 docker compose up --build --force-recreate --no-deps web
 
-# How to run the database migrations in your compose container
+### How to run the database migrations in your compose container
 - First run the compose file with 
     docker compose up -d
 - Then run the database upgrade command with 
     docker compose exec web flask db upgrade
 
-# Deleting docker volumes using docker compose
+### Deleting docker volumes using docker compose
     docker compose down -v
 
-# Flask migrate commands
+#### Flask migrate commands
     flask db init
     flask db migrate
     flask db upgrade
     flask db downgrade
 
-# Create .env file in root folder if say want to use another db like postgres (by defualt application uses SQLite) with below contents
+##### Create .env file in root folder if say want to use another db like postgres (by defualt application uses SQLite) with below contents
 DATABASE_URL=postgresql://db_username:db_password@db_service/db_name
 for eg
 DATABASE_URL=postgresql://postgres:password@db/postgres
